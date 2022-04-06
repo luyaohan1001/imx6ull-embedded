@@ -97,7 +97,7 @@ To test this, in putty serial:
 
 After u-boot is started, press <Enter> to enter command line of uboot.
 bootcmd stores the default command for uboot after the 3 seconds countdown. It will be executed once 3 seconds countdown finished.
-=> setenv bootcmd 'mmc dev 0;fatload mmc 0:1 80800000 zimage;fatload mmc 0:1 83000000 imx6ull-14x14-evk.dtb;bootz 80800000 - 8300000'
+=> setenv bootcmd 'mmc dev 0;fatload mmc 0:1 80800000 zimage;fatload mmc 0:1 83000000 imx6ull-alientek-emmc-luyaohan1001.dtb;bootz 80800000 - 8300000'
 
 => setenv bootargs 'console=tty1 console=ttymxc0,115200 root=/dev/mmcblk0p2 rootwait rw'
 

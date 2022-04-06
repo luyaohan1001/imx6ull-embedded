@@ -14,8 +14,8 @@ usage ()
 
 Usage: `basename $1` [options] <-device> <(optional)-flash> <(optional)-ddrsize>
 Examples：
-sudo ./imx6mksdboot.sh -device /dev/sdd
-sudo ./imx6mksdboot.sh -device /dev/sdd -flash emmc -ddrsize 512 
+sudo ./autobot.sh -device /dev/sdd
+sudo ./autobot.sh -device /dev/sdd -flash emmc -ddrsize 512 
 Options:
   -device              SD bulk device (e.g. /dev/<sdb>)
   -flash	       Flash type of dev board [emmc | nand]

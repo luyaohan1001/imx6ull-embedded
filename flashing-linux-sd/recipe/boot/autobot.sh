@@ -2,8 +2,8 @@
 
 if [[ $1 == '' ]]; then
 	echo 'Usage: 
-		./bot clean		=> Deletes the .dtb (device tree binary), zImage (kernel), and .imx (uboot) files.
-		./bot fetch		=> Copies the files from the symlinks in symlinks folder.'
+		./autobot clean		=> Deletes the .dtb (device tree binary), zImage (kernel), and .imx (uboot) files.
+		./autobot fetch		=> Copies the files from the symlinks in symlinks folder.'
 fi
 
 if [[ $1 == 'clean' ]]; then 

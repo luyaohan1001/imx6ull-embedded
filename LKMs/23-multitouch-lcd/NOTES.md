@@ -65,7 +65,6 @@
 		$ make dtbs
 
 		Encountered following error even added the above:
-
 			/lib/modules/4.1.15 # insmod gt9147.ko 
 			imx6ul-pinctrl 20e0000.iomuxc: pin MX6UL_PAD_GPIO1_IO01 already requested by 2040000.tsc; cannot claim for 1-0014
 			imx6ul-pinctrl 20e0000.iomuxc: pin-24 (1-0014) status -22
@@ -73,70 +72,39 @@
 			gt9147 1-0014: Error applying setting, reverse things back
 			input: gt9147 as /devices/platform/soc/2100000.aips-bus/21a4000.i2c/i2c-1/1-0014/input/input2
 
-		When we lookup in the device tree file we found it included imx6ull.dti
+# Setup environment variable for running tslib and qt application on imx6ull linux.
 
-		In imx6ull.dti, if we look up 2040000.iomuxc, we find this node. 
+		# test tslib, in imx6ull linux console
 
-			tsc: tsc@02040000 {
-				 compatible = "fsl,imx6ul-tsc";
-				 reg = <0x02040000 0x4000>, <0x0219c000 0x4000>;
-				 interrupts = <GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>,
-								<GIC_SPI 101 IRQ_TYPE_LEVEL_HIGH>;
-				 clocks = <&clks IMX6UL_CLK_IPG>,
-						<&clks IMX6UL_CLK_ADC2>;
-				 clock-names = "tsc", "adc";
-				 status = "disabled";
-			 };
+		$ vi /etc/profile
 
-		Now look up for tsc in imx6ull-alientek-emmc-luyaohan1001.dts
+		Add the following: 
+			export TSLIB_ROOT=/usr/lib/arm-tslib
+			export TSLIB_CONSOLEDEVICE=none
+			export TSLIB_FBDEVICE=/dev/fb0
+			export TSLIB_TSDEVICE=/dev/input/event1
+			export TSLIB_CONFFILE=$TSLIB_ROOT/etc/ts.conf
+			export TSLIB_PLUGINDIR=$TSLIB_ROOT/lib/ts
+			export TSLIB_CALIBFILE=/etc/pointercal
+			export LD_PRELOAD=$TSLIB_ROOT/lib/libts.so
 
-			We found the following node tsc corresponding to the tsc in imx6ull.dti:
+		$ source /etc/profile
 
-				&tsc {
-					pinctrl-names = "default";
-					pinctrl-0 = <&pinctrl_tsc>;				/* <------ (!) We have conflicted the use of pinctrl_tsc subnode with  "gt9147:gt9147@14" declared by our own/
-					xnur-gpio = <&gpio1 3 GPIO_ACTIVE_LOW>;
-					measure-delay-time = <0xffff>;
-					pre-charge-time = <0xfff>;
-					status = "okay";
-				};
+		$ /usr/lib/arm-tslib/bin/ts_test
 
-			Thus we need to comment out this subnode.
+		If you click on drag / draw / quit and it work then tslib is working!
 
-	
+		# test qt
 
-		Now try again after boot in imx6ull console!
+		Add the following: 
+			export QT_ROOT=/usr/lib/arm-qt
+			export QT_QPA_GENERIC_PLUGINS=tslib:/dev/input/event1 
+			export QT_QPA_FONTDIR=/usr/share/fonts
+			export QT_QPA_PLATFORM_PLUGIN_PATH=$QT_ROOT/plugins
+			export QT_QPA_PLATFORM=linuxfb:tty=/dev/fb0
+			export QT_PLUGIN_PATH=$QT_ROOT/plugins
+			export LD_LIBRARY_PATH=$QT_ROOT/lib:$QT_ROOT/plugins/platforms
+			export QML2_IMPORT_PATH=$QT_ROOT/qml
+			export QT_QPA_FB_TSLIB=1
 
-		/lib/modules/4.1.15 # insmod gt9147.ko 
-
-			Expect: 
-
-			input: gt9147 as /devices/platform/soc/2100000.aips-bus/21a4000.i2c/i2c-1/1-0014/input/input1
-
-			$ cd /dev/input
-
-			$ hexdump event1
-
-		# Touch the screen now and we should see output when we touch the screen:
-
-
-				0000000 2b62 0000 9656 000c 0003 0039 0000 0000
-				random: nonblocking pool is initialized261 0000
-
-				0000020 2b62 0000 9656 000c 0003 0036 012d 0000
-				0000030 2b62 0000 9656 000c 0001 014a 0001 0000
-				0000040 2b62 0000 9656 000c 0003 0000 0261 0000
-				0000050 2b62 0000 9656 000c 0003 0001 012d 0000
-				0000060 2b62 0000 9656 000c 0000 0000 0000 0000
-				0000070 2b62 0000 89ba 000d 0003 0039 ffff ffff
-				0000080 2b62 0000 89ba 000d 0001 014a 0000 0000
-				0000090 2b62 0000 89ba 000d 0000 0000 0000 0000
-
-
-
-
-		
-
-
-
-
+		$ source /etc/profile
