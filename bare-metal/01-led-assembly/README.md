@@ -10,7 +10,7 @@
 	> Expect the LED to turn on after hard reset.
 
 # Register Table
-	| Register Mnemonics                     |  Register Definition                 | Page Reference
+	| Register Mnemonics                     |  Register Definition                     | Page Reference
 	----------------------------------------------------------------------------------------------------------------
 	| CCM_CCGR0                              | CCM Clock Gating Register 0.             | Section 18.6.23. Page 698.
 	| CCM_CCGR1                              | CCM Clock Gating Register 1.             | Section 18.6.24. Page 700.
