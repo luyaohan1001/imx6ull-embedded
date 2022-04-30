@@ -158,6 +158,7 @@ static int __init led_init(void)
 	struct property *proper;
 
 	// getdevice树中的属性数据 
+
 	// 1.getdevice节点：luyaohan1001-led 
 	dtsled.nd = of_find_node_by_path("/luyaohan1001-led"); // find the nodes in /proc/device-tree
 	if (dtsled.nd == NULL) {

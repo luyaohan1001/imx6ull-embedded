@@ -114,7 +114,8 @@ if [ ! -d $sdkdir ]; then
    exit 1
 fi
 
-if [ ! -f $sdkdir/filesystem/*.tar.* ]; then
+if [ ! -f $sdkdir/filesystem/*.tar.* ]; then # if using tar.bz2 file
+# if [ ! -f $sdkdir/filesystem/*.tar ]; then
   echo "(!)error: Cannot find compressed rootfs under $sdkdir/filesystem/"
   exit 1
 fi
@@ -249,8 +250,10 @@ execute "mkdir -p /tmp/sdk/$$"
 execute "mount ${device}2 /tmp/sdk/$$"
 
 echo "Decompressing file system to ${device}2..."
-rootfs=`ls -1 $sdkdir/filesystem/*.tar.*`
-execute "tar jxfm $rootfs -C /tmp/sdk/$$"
+rootfs=`ls -1 $sdkdir/filesystem/*.tar.*` # if using rootfs.tar.bz2
+# rootfs=`ls -1 $sdkdir/filesystem/*.tar` # if using rootfs.tar
+execute "tar jxfm $rootfs -C /tmp/sdk/$$" # if using rootfs.tar.bz2
+# execute "tar xvf $rootfs -C /tmp/sdk/$$" # if using rootfs.tar
 sync
 echo "Completed: Depressing file system to ${device}2."
 

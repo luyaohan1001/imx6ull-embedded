@@ -12,7 +12,7 @@ OS: Ubuntu 16.04
 
 		$ sudo tar xf gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabihf.tar.xz -C /usr/local/arm/
 
-	4. Add the tool to environment path.
+	3. Add the tool to environment path.
 
 		$ sudo vim /etc/profile
 
@@ -20,11 +20,11 @@ OS: Ubuntu 16.04
 
 		export PATH=$PATH:/usr/local/arm/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabihf/bin
 
-	5. Install some dependencies
+	4. Install some dependencies
 
 		$ sudo apt-get install lsb-core lib32stdc++6
 
-	6. Check if the installation is successful:
+	5. Check if the installation is successful:
 
 		$ arm-linux-gnueabihf-gcc -v
 

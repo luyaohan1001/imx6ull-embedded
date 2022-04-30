@@ -17,12 +17,23 @@ fi
 
 if [[ $1 == 'fetch' ]]; then 
 	echo 'fetching from symlinks...'
+
 	sudo cp -r symlinks/rootfs .
 	cd rootfs 
 	tar -cvjSf rootfs.tar.bz2 ./*
 	cd ..
-	mv rootfs/rootfs.tar.bz2 .
+	mv ./rootfs/rootfs.tar.bz2 .
 	rm -rf rootfs
+
+	# mkdir rootfs
+	# cp symlinks/rootfs.tar ./rootfs
+	# cd rootfs
+	# tar -xvf rootfs.tar
+	# tar -cvjSf rootfs.tar.bz2 ./*
+	# cd ..
+	# mv ./rootfs/rootfs.tar.bz2 .
+	# rm -rf rootfs
+	
 	echo '- done -'
 	exit 0
 fi
