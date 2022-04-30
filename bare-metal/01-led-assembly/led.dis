@@ -5,8 +5,8 @@ led.elf:     file format elf32-littlearm
 Disassembly of section .text:
 
 87800000 <_start>:
-87800000:	e59f0068 	ldr	r0, [pc, #104]	; 87800070 <loop+0x4>
-87800004:	e3e01000 	mvn	r1, #0
+87800000:	e3e01000 	mvn	r1, #0
+87800004:	e59f0064 	ldr	r0, [pc, #100]	; 87800070 <loop+0x4>
 87800008:	e5801000 	str	r1, [r0]
 8780000c:	e59f0060 	ldr	r0, [pc, #96]	; 87800074 <loop+0x8>
 87800010:	e5801000 	str	r1, [r0]
@@ -82,7 +82,7 @@ Disassembly of section .debug_info:
   10:	87800000 	strhi	r0, [r0, r0]
   14:	878000a0 	strhi	r0, [r0, r0, lsr #1]
   18:	2e64656c 	cdpcs	5, 6, cr6, cr4, cr12, {3}
-  1c:	682f0073 	stmdavs	pc!, {r0, r1, r4, r5, r6}	; <UNPREDICTABLE>
+  1c:	682f0053 	stmdavs	pc!, {r0, r1, r4, r6}	; <UNPREDICTABLE>
   20:	2f656d6f 	svccs	0x00656d6f
   24:	6179756c 	cmnvs	r9, ip, ror #10
   28:	6e61686f 	cdpvs	8, 6, cr6, cr1, cr15, {3}
@@ -112,14 +112,14 @@ Disassembly of section .debug_abbrev:
 00000000 <.debug_abbrev>:
    0:	10001101 	andne	r1, r0, r1, lsl #2
    4:	12011106 	andne	r1, r1, #-2147483647	; 0x80000001
-   8:	1b080301 	blne	200c14 <_start-0x875ff3ec>
+   8:	1b080301 	blne	200c14 <GPIO1_DR-0x1e9b3ec>
    c:	13082508 	movwne	r2, #34056	; 0x8508
   10:	00000005 	andeq	r0, r0, r5
 
 Disassembly of section .debug_line:
 
 00000000 <.debug_line>:
-   0:	0000005e 	andeq	r0, r0, lr, asr r0
+   0:	0000005a 	andeq	r0, r0, sl, asr r0
    4:	001c0002 	andseq	r0, ip, r2
    8:	01020000 	mrseq	r0, (UNDEF: 2)
    c:	000d0efb 	strdeq	r0, [sp], -fp
@@ -127,21 +127,20 @@ Disassembly of section .debug_line:
   14:	01000000 	mrseq	r0, (UNDEF: 0)
   18:	00010000 	andeq	r0, r1, r0
   1c:	2e64656c 	cdpcs	5, 6, cr6, cr4, cr12, {3}
-  20:	00000073 	andeq	r0, r0, r3, ror r0
+  20:	00000053 	andeq	r0, r0, r3, asr r0
   24:	05000000 	streq	r0, [r0, #-0]
   28:	80000002 	andhi	r0, r0, r2
-  2c:	01160387 	tsteq	r6, r7, lsl #7
-  30:	2f302f2f 	svccs	0x00302f2f
+  2c:	01250387 	smlawbeq	r5, r7, r3, r0
+  30:	2f302f31 	svccs	0x00302f31
   34:	2f302f30 	svccs	0x00302f30
   38:	2f302f30 	svccs	0x00302f30
   3c:	2f322f30 	svccs	0x00322f30
-  40:	2e0c032f 	cdpcs	3, 0, cr0, cr12, cr15, {1}
-  44:	2f312f2f 	svccs	0x00312f2f
-  48:	2f2f332f 	svccs	0x002f332f
-  4c:	2e460334 	mcrcs	3, 2, r0, cr6, cr4, {1}
-  50:	31313132 	teqcc	r1, r2, lsr r1
-  54:	03333131 	teqeq	r3, #1073741836	; 0x4000000c
-  58:	322f2e0e 	eorcc	r2, pc, #14, 28	; 0xe0
-  5c:	00020235 	andeq	r0, r2, r5, lsr r2
-  60:	Address 0x0000000000000060 is out of bounds.
+  40:	2f31312f 	svccs	0x0031312f
+  44:	312f2f31 	teqcc	pc, r1, lsr pc	; <UNPREDICTABLE>
+  48:	03342f2f 	teqeq	r4, #47, 30	; 0xbc
+  4c:	31312e50 	teqcc	r1, r0, asr lr
+  50:	31313131 	teqcc	r1, r1, lsr r1
+  54:	32313333 	eorscc	r3, r1, #-872415232	; 0xcc000000
+  58:	00020233 	andeq	r0, r2, r3, lsr r2
+  5c:	Address 0x000000000000005c is out of bounds.
 
