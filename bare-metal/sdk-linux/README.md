@@ -10,4 +10,10 @@
 	$ chmod +x SDK_2.2_MCIM6ULL_RFP_Linux.run
 
 	$ ./SDK_2.2_MCIM6ULL_RFP_Linux.run
+
+
+|Header1 |Header2  | Header3|
+--- | --- | ---|
+|data1|data2|data3|
+|data11|data12|data13|
 	
