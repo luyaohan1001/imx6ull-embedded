@@ -12,8 +12,12 @@
 	$ ./SDK_2.2_MCIM6ULL_RFP_Linux.run
 
 
-|Header1 |Header2  | Header3|
---- | --- | ---|
-|data1|data2|data3|
-|data11|data12|data13|
+| File          |      Location in ./native               | Descrption    |
+----------------|-----------------------------------------|---------------|
+| core_ca7.h    | ./CORTEXA/Include/core_ca7.h            | TODO          |
+| fsl_common.h  | ./devices/MCIMX6Y2/drivers/fsl_common.h | TODO          |
+| fsl_common.h  | ./devices/MCIMX6Y2/drivers/fsl_iomuxc.h | TODO          |
+| MCIMX6Y2.h    | ./devices/MCIMX6Y2/MCIMX6Y2.h           | TODO          |
+
+
 	
