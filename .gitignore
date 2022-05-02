@@ -1,1 +1,3 @@
 ./flashing-linux-sd/recipe/filesystem/rootfs.tar.bz2
+./bare-metal/alientek-examples/
+

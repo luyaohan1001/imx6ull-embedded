@@ -1,0 +1,1 @@
+./devices/MCIMX6Y2/MCIMX6Y2.h
