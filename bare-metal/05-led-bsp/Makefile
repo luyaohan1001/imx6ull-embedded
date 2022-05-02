@@ -1,54 +1,44 @@
-CROSS_COMPILE 	?= arm-linux-gnueabihf-
-TARGET		  	?= led
-SDK_DIR = ../sdk-linux/migrated
-
+CROSS_COMPILE ?= arm-linux-gnueabihf-
+TARGET        ?= led
+BSP_DIR = ./bsp
 
 CC 				:= $(CROSS_COMPILE)gcc
 LD				:= $(CROSS_COMPILE)ld
 OBJCOPY 		:= $(CROSS_COMPILE)objcopy
 OBJDUMP 		:= $(CROSS_COMPILE)objdump
 
-INCDIRS 		:= $(SDK_DIR) \
-				   libs/clk \
-				   libs/led \
-				   libs/delay 
+all: led.bin
+
+INCDIRS := \
+-I$(BSP_DIR)/clk \
+-I$(BSP_DIR)/led \
+-I$(BSP_DIR)/delay \
+-I$(BSP_DIR)/nxp-migrated
 				   			   
-SRCDIRS			:= project \
-				   libs/clk \
-				   libs/led \
-				   libs/delay 
-				   
-				   
-# INCLUDE			:= $(patsubst %, -I %, $(INCDIRS))
-INCLUDE := -I $(SDK_DIR)  -I libs/clk  -I libs/led  -I libs/delay 
+SRCDIRS	:= \
+project \
+$(BSP_DIR)/clk \
+$(BSP_DIR)/led \
+$(BSP_DIR)/delay 
 
-SFILES			:= $(foreach dir, $(SRCDIRS), $(wildcard $(dir)/*.S))
-CFILES			:= $(foreach dir, $(SRCDIRS), $(wildcard $(dir)/*.c))
+# Special path in Makefile to search for source files.
+VPATH			:= $(SRCDIRS) 
 
-SFILENDIR		:= $(notdir  $(SFILES))
-CFILENDIR		:= $(notdir  $(CFILES))
+led.bin: bsp_clk.o bsp_led.o bsp_delay.o start.o main.o 
+#$(LD) -Timx6ul.lds -o $(TARGET).elf /build/start.o /build/main.o
+#	$(OBJCOPY) -O binary -S $(TARGET).elf 
+#	$(OBJDUMP) -D -m arm $(TARGET).elf > $(TARGET).disassembled.s
+	$(CC) -Wall -nostdlib -c -O2 -I bsp/nxp-migrated -I bsp/clk -I bsp/led  -I bsp/delay  -o build/start.o project/start.S
+	$(CC) -Wall -nostdlib -c -O2 -I bsp/nxp-migrated -I bsp/clk -I bsp/led  -I bsp/delay -o build/main.o project/main.c
+	$(LD) -Timx6ul.lds -o bin.elf build/start.o build/main.o build/bsp_clk.o build/bsp_led.o build/bsp_delay.o
+	$(OBJCOPY) -O binary -S bin.elf bin.bin
+	$(OBJDUMP) -D -m arm bin.elf > bin.dis
 
-# Substitue Pattern, make .S to .o objects, and export those objects to the obj directory.
-SOBJS			:= $(patsubst %, obj/%, $(SFILENDIR:.S=.o))
-COBJS			:= $(patsubst %, obj/%, $(CFILENDIR:.c=.o))
-OBJS			:= $(SOBJS) $(COBJS)
-
-VPATH			:= $(SRCDIRS)
 
 .PHONY: clean
-	
-$(TARGET).bin : $(OBJS)
-	$(LD) -Timx6ul.lds -o $(TARGET).elf $^
-	$(OBJCOPY) -O binary -S $(TARGET).elf $@
-	$(OBJDUMP) -D -m arm $(TARGET).elf > $(TARGET).disassembled.s
 
-$(SOBJS) : obj/%.o : %.S
-	$(CC) -Wall -nostdlib -c -O2  $(INCLUDE) -o $@ $<
-
-$(COBJS) : obj/%.o : %.c
-	$(CC) -Wall -nostdlib -c -O2  $(INCLUDE) -o $@ $<
-	
 clean:
-	rm -rf $(TARGET).elf $(TARGET).disassembled.s $(TARGET).bin $(COBJS) $(SOBJS)
+	rm -rf $(TARGET).elf $(TARGET).disassembled.s $(TARGET).bin ./build/*.o
+
 
 	

@@ -45,8 +45,8 @@ SFILENDIR := $(notdir $(SFILES))
 CFILENDIR := $(notdir $(CFILES))
 
 # Substitute patterns, make object files from Assembly(.S) and C source (.c) files.
-SOBJS := $(patsubst %, obj/%, $(SFILENDIR:.S=.o))
-COBJS := $(patsubst %, obj/%, $(CFILENDIR:.c=.o))
+SOBJS := $(patsubst %, build/%, $(SFILENDIR:.S=.o))
+COBJS := $(patsubst %, build/%, $(CFILENDIR:.c=.o))
 OBJS := $(SOBJS) $(COBJS)
 
 VPATH := $(SRCDIRS)
@@ -57,11 +57,11 @@ $(TARGET).bin : $(OBJS)
 	$(OBJDUMP) -D -m arm $(TARGET).elf > $(TARGET).dis
 
 # Compile assmebly sources.
-$(SOBJS) : obj/%.o : %.S
+$(SOBJS) : build/%.o : %.S
 	$(CC) -Wall -nostdlib -fno-builtin -c -O2  $(INCLUDE) -o $@ $<
 
 # Compile C sources.
-$(COBJS) : obj/%.o : %.c
+$(COBJS) : build/%.o : %.c
 	$(CC) -Wall -nostdlib -fno-builtin -c -O2  $(INCLUDE) -o $@ $<
 
 

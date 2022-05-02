@@ -31,8 +31,8 @@ CFILES			:= $(foreach dir, $(SRCDIRS), $(wildcard $(dir)/*.c))
 SFILENDIR		:= $(notdir  $(SFILES))
 CFILENDIR		:= $(notdir  $(CFILES))
 
-SOBJS			:= $(patsubst %, obj/%, $(SFILENDIR:.S=.o))
-COBJS			:= $(patsubst %, obj/%, $(CFILENDIR:.c=.o))
+SOBJS			:= $(patsubst %, build/%, $(SFILENDIR:.S=.o))
+COBJS			:= $(patsubst %, build/%, $(CFILENDIR:.c=.o))
 OBJS			:= $(SOBJS) $(COBJS)
 
 VPATH			:= $(SRCDIRS)
@@ -44,10 +44,10 @@ $(TARGET).bin : $(OBJS)
 	$(OBJCOPY) -O binary -S $(TARGET).elf $@
 	$(OBJDUMP) -D -m arm $(TARGET).elf > $(TARGET).dis
 
-$(SOBJS) : obj/%.o : %.S
+$(SOBJS) : build/%.o : %.S
 	$(CC) -Wall -nostdlib -c -O2  $(INCLUDE) -o $@ $<
 
-$(COBJS) : obj/%.o : %.c
+$(COBJS) : build/%.o : %.c
 	$(CC) -Wall -nostdlib -c -O2  $(INCLUDE) -o $@ $<
 	
 clean:

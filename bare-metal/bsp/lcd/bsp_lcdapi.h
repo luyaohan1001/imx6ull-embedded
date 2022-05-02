@@ -1,15 +1,5 @@
 #ifndef BSP_LCDAPI_H
 #define BSP_LCDAPI_H
-/***************************************************************
-Copyright © zuozhongkai Co., Ltd. 1998-2019. All rights reserved.
-文件名	: 	 bsp_lcdapi.h
-作者	   : 左忠凯
-版本	   : V1.0
-描述	   : LCD显示API函数。
-其他	   : 无
-论坛 	   : www.wtmembed.com
-日志	   : 初版V1.0 2019/3/18 左忠凯创建
-***************************************************************/
 #include "imx6ul.h"
 #include "bsp_lcd.h"
 

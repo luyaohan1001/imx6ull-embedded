@@ -1,21 +1,11 @@
-/***************************************************************
-Copyright © zuozhongkai Co., Ltd. 1998-2019. All rights reserved.
-文件名	: 	 bsp_adc.c
-作者	   : 左忠凯
-版本	   : V1.0
-描述	   : ADC驱动文件。
-其他	   : 无
-论坛 	   : www.openedv.com
-日志	   : 初版V1.0 2019/1/22 左忠凯创建
-***************************************************************/
 #include "bsp_adc.h"
 #include "bsp_delay.h"
 #include "stdio.h"
 
-/*
- * @description	: 初始化ADC1_CH1，使用GPIO1_IO01这个引脚。
- * @param		: 无
- * @return 		: 0 成功，其他值 错误代码
+/**
+ * @brief  初始化ADC1_CH1，使用GPIO1_IO01这个引脚。
+ * @param  None.
+ * @return 0 成功，其他值 错误代码
  */
 int adc1ch1_init(void)
 {
@@ -60,10 +50,10 @@ int adc1ch1_init(void)
     return ret;
 }
 
-/*
- * @description	: 初始化ADC1校准
- * @param		: 无
- * @return 		: kStatus_Success 成功，kStatus_Fail 失败
+/**
+ * @brief  初始化ADC1校准
+ * @param  None.
+ * @return kStatus_Success 成功，kStatus_Fail 失败
  */
 status_t adc1_autocalibration(void)
 {
@@ -92,10 +82,10 @@ status_t adc1_autocalibration(void)
     return ret;
 }
 
-/*
- * @description	: 获取ADC原始值
- * @param		: 无
- * @return 		: 获取到的ADC原始值
+/**
+ * @brief  获取ADC原始值
+ * @param  None.
+ * @return 获取到的ADC原始值
  */
 unsigned int getadc_value(void)
 {
@@ -109,33 +99,33 @@ unsigned int getadc_value(void)
     return ADC1->R[0];    /* 返回ADC值 */
 }
 
-/*
- * @description	        : 获取ADC平均值
- * @param		times   : 获取次数
- * @return 		        : times次转换结果平均值
+/**
+ * @brief  获取ADC平均值
+ * @param  times 获取次数
+ * @return times次转换结果平均值
  */
 unsigned short getadc_average(unsigned char times)
 {
-	unsigned int temp_val = 0;
-	unsigned char t;
-	for(t = 0; t < times; t++){
-		temp_val += getadc_value();
-		delayms(5);
-	}
-	return temp_val / times;
+  unsigned int temp_val = 0;
+  unsigned char t;
+  for(t = 0; t < times; t++){
+    temp_val += getadc_value();
+    delayms(5);
+  }
+  return temp_val / times;
 } 
 
-/*
- * @description : 获取ADC对应的电压值
- * @param	    : 无
- * @return 	    : 获取到的电压值，单位为mV
+/**
+ * @brief  获取ADC对应的电压值
+ * @param  None.
+ * @return 获取到的电压值，单位为mV
  */
 unsigned short getadc_volt(void)
 {
     unsigned int adcvalue=0;
     unsigned int ret = 0;
     adcvalue = getadc_average(5);
-    ret = (float)adcvalue * (3300.0f / 4096.0f);    	/* 获取计算后的带小数的实际电压值 */
+    ret = (float)adcvalue * (3300.0f / 4096.0f);      /* 获取计算后的带小数的实际电压值 */
     return  ret;
 }
 
