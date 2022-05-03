@@ -3,7 +3,7 @@
 #include "imx6ul.h"
 
 
-/* 函数声明 */
+/** 函数声明 */
 void delay_init(void);
 void delayus(unsigned    int usdelay);
 void delayms(unsigned   int msdelay);

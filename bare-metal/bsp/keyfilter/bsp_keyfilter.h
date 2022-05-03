@@ -2,7 +2,7 @@
 #define _BSP_KEYFILTER_H
 
 
-/* 函数声明 */
+/** 函数声明 */
 void filterkey_init(void);
 void filtertimer_init(unsigned int value);
 void filtertimer_stop(void);

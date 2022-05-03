@@ -10,7 +10,7 @@ for item in $items; do
 		# Inner folder.
 		for file in `ls`; do
 			if [[ -f $file ]]; then
-			 sed -i 's/无/None./g' $file
+			 sed -i 's/@return/@retval/g' $file
 			fi
 		done;
 

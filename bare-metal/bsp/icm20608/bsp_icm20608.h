@@ -5,18 +5,18 @@
 #include "bsp_gpio.h"
 
 
-/* 宏定义 */
-#define ICM20608_CSN(n)    (n ? gpio_pinwrite(GPIO1, 20, 1) : gpio_pinwrite(GPIO1, 20, 0))   /* SPI片选信号   */
+/** 宏定义 */
+#define ICM20608_CSN(n)    (n ? gpio_pinwrite(GPIO1, 20, 1) : gpio_pinwrite(GPIO1, 20, 0))   /** SPI片选信号   */
 
-#define ICM20608G_ID      0XAF  /* ID值 */
-#define ICM20608D_ID      0XAE  /* ID值 */
+#define ICM20608G_ID      0XAF  /** ID值 */
+#define ICM20608D_ID      0XAE  /** ID值 */
 
-/* ICM20608寄存器 
+/** ICM20608寄存器 
  *复位后所有寄存器地址都为0，除了
  *Register 107(0X6B) Power Management 1   = 0x40
  *Register 117(0X75) WHO_AM_I         = 0xAF或0xAE
  */
-/* 陀螺仪和加速度自测(出产时设置，用于与用户的自检输出值比较） */
+/** 陀螺仪和加速度自测(出产时设置，用于与用户的自检输出值比较） */
 #define  ICM20_SELF_TEST_X_GYRO    0x00
 #define  ICM20_SELF_TEST_Y_GYRO    0x01
 #define  ICM20_SELF_TEST_Z_GYRO    0x02
@@ -24,7 +24,7 @@
 #define  ICM20_SELF_TEST_Y_ACCEL    0x0E
 #define  ICM20_SELF_TEST_Z_ACCEL    0x0F
 
-/* 陀螺仪静态偏移 */
+/** 陀螺仪静态偏移 */
 #define  ICM20_XG_OFFS_USRH      0x13
 #define  ICM20_XG_OFFS_USRL      0x14
 #define  ICM20_YG_OFFS_USRH      0x15
@@ -45,7 +45,7 @@
 #define  ICM20_INT_ENABLE      0x38
 #define  ICM20_INT_STATUS      0x3A
 
-/* 加速度输出 */
+/** 加速度输出 */
 #define  ICM20_ACCEL_XOUT_H      0x3B
 #define  ICM20_ACCEL_XOUT_L      0x3C
 #define  ICM20_ACCEL_YOUT_H      0x3D
@@ -53,11 +53,11 @@
 #define  ICM20_ACCEL_ZOUT_H      0x3F
 #define  ICM20_ACCEL_ZOUT_L      0x40
 
-/* 温度输出 */
+/** 温度输出 */
 #define  ICM20_TEMP_OUT_H      0x41
 #define  ICM20_TEMP_OUT_L      0x42
 
-/* 陀螺仪输出 */
+/** 陀螺仪输出 */
 #define  ICM20_GYRO_XOUT_H      0x43
 #define  ICM20_GYRO_XOUT_L      0x44
 #define  ICM20_GYRO_YOUT_H      0x45
@@ -75,7 +75,7 @@
 #define  ICM20_FIFO_R_W        0x74
 #define  ICM20_WHO_AM_I         0x75
 
-/* 加速度静态偏移 */
+/** 加速度静态偏移 */
 #define  ICM20_XA_OFFSET_H      0x77
 #define  ICM20_XA_OFFSET_L      0x78
 #define  ICM20_YA_OFFSET_H      0x7A
@@ -83,33 +83,33 @@
 #define  ICM20_ZA_OFFSET_H      0x7D
 #define  ICM20_ZA_OFFSET_L       0x7E
 
-/*
+/**
  * ICM20608结构体
  */
 struct icm20608_dev_struc
 {
-  signed int gyro_x_adc;    /* 陀螺仪X轴原始值       */
-  signed int gyro_y_adc;    /* 陀螺仪Y轴原始值       */
-  signed int gyro_z_adc;    /* 陀螺仪Z轴原始值       */
-  signed int accel_x_adc;    /* 加速度计X轴原始值       */
-  signed int accel_y_adc;    /* 加速度计Y轴原始值       */
-  signed int accel_z_adc;    /* 加速度计Z轴原始值       */
-  signed int temp_adc;    /* 温度原始值         */
+  signed int gyro_x_adc;    /** 陀螺仪X轴原始值       */
+  signed int gyro_y_adc;    /** 陀螺仪Y轴原始值       */
+  signed int gyro_z_adc;    /** 陀螺仪Z轴原始值       */
+  signed int accel_x_adc;    /** 加速度计X轴原始值       */
+  signed int accel_y_adc;    /** 加速度计Y轴原始值       */
+  signed int accel_z_adc;    /** 加速度计Z轴原始值       */
+  signed int temp_adc;    /** 温度原始值         */
 
-  /* 下面是计算得到的实际值，扩大100倍 */
-  signed int gyro_x_act;    /* 陀螺仪X轴实际值       */
-  signed int gyro_y_act;    /* 陀螺仪Y轴实际值       */
-  signed int gyro_z_act;    /* 陀螺仪Z轴实际值       */
-  signed int accel_x_act;    /* 加速度计X轴实际值       */
-  signed int accel_y_act;    /* 加速度计Y轴实际值       */
-  signed int accel_z_act;    /* 加速度计Z轴实际值       */
-  signed int temp_act;    /* 温度实际值         */
+  /** 下面是计算得到的实际值，扩大100倍 */
+  signed int gyro_x_act;    /** 陀螺仪X轴实际值       */
+  signed int gyro_y_act;    /** 陀螺仪Y轴实际值       */
+  signed int gyro_z_act;    /** 陀螺仪Z轴实际值       */
+  signed int accel_x_act;    /** 加速度计X轴实际值       */
+  signed int accel_y_act;    /** 加速度计Y轴实际值       */
+  signed int accel_z_act;    /** 加速度计Z轴实际值       */
+  signed int temp_act;    /** 温度实际值         */
 };
 
-struct icm20608_dev_struc icm20608_dev;  /* icm20608设备 */
+struct icm20608_dev_struc icm20608_dev;  /** icm20608设备 */
 
 
-/* 函数声明 */
+/** 函数声明 */
 unsigned char icm20608_init(void);
 void icm20608_write_reg(unsigned char reg, unsigned char value);
 unsigned char icm20608_read_reg(unsigned char reg);

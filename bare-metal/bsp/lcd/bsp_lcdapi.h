@@ -3,7 +3,7 @@
 #include "imx6ul.h"
 #include "bsp_lcd.h"
 
-/* 函数声明 */
+/** 函数声明 */
 void lcd_drawline(unsigned short x1, unsigned short y1, unsigned short x2, unsigned short y2);
 void lcd_draw_rectangle(unsigned short x1, unsigned short y1, unsigned short x2, unsigned short y2);
 void lcd_draw_Circle(unsigned short x0,unsigned short y0,unsigned char r);

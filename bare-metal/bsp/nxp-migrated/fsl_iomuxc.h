@@ -1,4 +1,4 @@
-/**************************************************************
+/***************************************************************
 Copyright © zuozhongkai Co., Ltd. 1998-2019. All rights reserved.
 文件名	: 	 fsl_iomuxc.h
 作者	   : 左忠凯修改NXP官方SDK
@@ -16,26 +16,26 @@ Copyright © zuozhongkai Co., Ltd. 1998-2019. All rights reserved.
 #include "MCIMX6Y2.h"
 #include "fsl_common.h"
 
-/*!
+/**!
  * @addtogroup iomuxc_driver
  * @{
  */
 
-/*! @file */
+/**! @file */
 
-/*******************************************************************************
+/********************************************************************************
  * Definitions
  ******************************************************************************/
 
-/*! @name Driver version */
-/*@{*/
-/*! @brief IOMUXC driver version 2.0.0. */
+/**! @name Driver version */
+/**@{*/
+/**! @brief IOMUXC driver version 2.0.0. */
 #define FSL_IOMUXC_DRIVER_VERSION (MAKE_VERSION(2, 0, 0))
-/*@}*/
+/**@}*/
 
-/*! @name Pin function ID */
-/*@{*/
-/*! @brief The pin function ID is a tuple of <muxRegister muxMode inputRegister inputDaisy configRegister> */
+/**! @name Pin function ID */
+/**@{*/
+/**! @brief The pin function ID is a tuple of <muxRegister muxMode inputRegister inputDaisy configRegister> */
 #define IOMUXC_SNVS_BOOT_MODE0_GPIO5_IO10                    0x02290000U, 0x5U, 0x00000000U, 0x0U, 0x02290044U
 #define IOMUXC_SNVS_BOOT_MODE1_GPIO5_IO11                    0x02290004U, 0x5U, 0x00000000U, 0x0U, 0x02290048U
 #define IOMUXC_SNVS_SNVS_TAMPER0_GPIO5_IO00                  0x02290008U, 0x5U, 0x00000000U, 0x0U, 0x0229004CU
@@ -1051,10 +1051,10 @@ Copyright © zuozhongkai Co., Ltd. 1998-2019. All rights reserved.
 
 
 
-/*! @name Configuration */
-/*@{*/
+/**! @name Configuration */
+/**@{*/
 
-/*!
+/**!
  * @brief Sets the IOMUXC pin mux mode.
  * @note The first five parameters can be filled with the pin function ID macros.
  *
@@ -1091,7 +1091,7 @@ static inline void IOMUXC_SetPinMux(uint32_t muxRegister,
     }
 }
 
-/*!
+/**!
  * @brief Sets the IOMUXC pin configuration.
  * @note The previous five parameters can be filled with the pin function ID macros.
  *
@@ -1120,4 +1120,4 @@ static inline void IOMUXC_SetPinConfig(uint32_t muxRegister,
     }
 }
 
-#endif /* _FSL_IOMUXC_H_ */
+#endif /** _FSL_IOMUXC_H_ */

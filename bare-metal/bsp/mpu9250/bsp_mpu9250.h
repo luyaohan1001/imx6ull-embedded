@@ -3,14 +3,14 @@
 
 #include "imx6ul.h"
 
-#define MPU9250_ADDR            0X68    /* MPU6500的器件IIC地址 */
-#define MPU6500_ID        0X71    /* MPU6500的器件ID      */
+#define MPU9250_ADDR            0X68    /** MPU6500的器件IIC地址 */
+#define MPU6500_ID        0X71    /** MPU6500的器件ID      */
 
-/*MPU9250内部封装了一个AK8963磁力计,地址和ID如下: */
-#define AK8963_ADDR        0X0C  /* AK8963的I2C地址     */
-#define AK8963_ID        0X48  /* AK8963的器件ID      */
+/**MPU9250内部封装了一个AK8963磁力计,地址和ID如下: */
+#define AK8963_ADDR        0X0C  /** AK8963的I2C地址     */
+#define AK8963_ID        0X48  /** AK8963的器件ID      */
 
-/* MPU6500的内部寄存器 */
+/** MPU6500的内部寄存器 */
 #define MPU_SELF_TESTX_REG    0X0D  //自检寄存器X
 #define MPU_SELF_TESTY_REG    0X0E  //自检寄存器Y
 #define MPU_SELF_TESTZ_REG    0X0F  //自检寄存器Z
@@ -78,7 +78,7 @@
 #define MPU_FIFO_RW_REG      0X74  //FIFO读写寄存器
 #define MPU_DEVICE_ID_REG    0X75  //器件ID寄存器
 
-/*AK8963的内部寄存器 */
+/**AK8963的内部寄存器 */
 #define MAG_WIA          0x00  //AK8963的器件ID寄存器地址
 #define MAG_CNTL1                0X0A    
 #define MAG_CNTL2              0X0B
@@ -91,7 +91,7 @@
 #define MAG_ZOUT_H        0X08
 
 
-/* 函数声明 */
+/** 函数声明 */
 unsigned char mpu9250_init(void);
 unsigned char mpu_write_byte(unsigned char addr,unsigned char reg, unsigned char data);
 unsigned char mpu_read_byte(unsigned char addr,unsigned char reg);

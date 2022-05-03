@@ -4,38 +4,38 @@
 
 
 
-/* 背光设备 */
+/** 背光设备 */
 struct backlight_dev_struc backlight_dev;
 
-/**
+/***
   * @brief  pwm1中断处理函数
   * @param  None.
-  * @return None.
+  * @retval None.
   */
 void pwm1_irqhandler(void)
 {
 
-  if(PWM1->PWMSR & (1 << 3))   /* FIFO为空中断 */
+  if(PWM1->PWMSR & (1 << 3))   /** FIFO为空中断 */
   {
-    /* 将占空比信息写入到FIFO中,其实就是设置占空比 */
+    /** 将占空比信息写入到FIFO中,其实就是设置占空比 */
     pwm1_setduty(backlight_dev.pwm_duty); 
-    PWM1->PWMSR |= (1 << 3); /* 写1清除中断标志位 */ 
+    PWM1->PWMSR |= (1 << 3); /** 写1清除中断标志位 */ 
   }
 }
 
-/**
+/***
   * @brief   初始化背光PWM
   * @param   None.
-  * @return  None.
+  * @retval  None.
   */
 void backlight_init(void)
 {
   unsigned char i = 0;
   
-  /* 1、背光PWM IO初始化 */
-  IOMUXC_SetPinMux(IOMUXC_GPIO1_IO08_PWM1_OUT, 0); /* 复用为PWM1_OUT */
+  /** 1、背光PWM IO初始化 */
+  IOMUXC_SetPinMux(IOMUXC_GPIO1_IO08_PWM1_OUT, 0); /** 复用为PWM1_OUT */
 
-  /* 配置PWM IO属性  
+  /** 配置PWM IO属性  
    *bit 16:0 HYS关闭
    *bit [15:14]: 10 100K上拉
    *bit [13]: 1 pull功能
@@ -47,8 +47,8 @@ void backlight_init(void)
    */
   IOMUXC_SetPinConfig(IOMUXC_GPIO1_IO08_PWM1_OUT, 0XB090);
   
-  /* 2、初始化PWM1    */
-  /*
+  /** 2、初始化PWM1    */
+  /**
       * 初始化寄存器PWMCR
       * bit[27:26]  : 01  当FIFO中空余位置大于等于2的时候FIFO空标志值位
       * bit[25]    : 0  停止模式下PWM不工作
@@ -65,60 +65,60 @@ void backlight_init(void)
       * bit[2:1]    : 00  FIFO中的sample数据每个只能使用一次。
       * bit[0]    : 0   先关闭PWM，后面再使能
    */
-  PWM1->PWMCR = 0;  /* 寄存器先清零 */
+  PWM1->PWMCR = 0;  /** 寄存器先清零 */
   PWM1->PWMCR |= (1 << 26) | (1 << 16) | (65 << 4);
 
-  /* 设置PWM周期为1000,那么PWM频率就是1M/1000 = 1KHz。 */
+  /** 设置PWM周期为1000,那么PWM频率就是1M/1000 = 1KHz。 */
   pwm1_setperiod_value(1000);
 
-  /* 设置占空比，默认50%占空比   ,写四次是因为有4个FIFO */
+  /** 设置占空比，默认50%占空比   ,写四次是因为有4个FIFO */
   backlight_dev.pwm_duty = 50;
   for(i = 0; i < 4; i++)
   {
     pwm1_setduty(backlight_dev.pwm_duty);  
   }
   
-  /* 使能FIFO空中断，设置寄存器PWMIR寄存器的bit0为1 */
+  /** 使能FIFO空中断，设置寄存器PWMIR寄存器的bit0为1 */
   PWM1->PWMIR |= 1 << 0;
-  system_register_irqhandler(PWM1_IRQn, (system_irq_handler_t)pwm1_irqhandler, NULL);  /* 注册中断服务函数 */
-  GIC_EnableIRQ(PWM1_IRQn);  /* 使能GIC中对应的中断 */
-  PWM1->PWMSR = 0;      /* PWM中断状态寄存器清零 */
+  system_register_irqhandler(PWM1_IRQn, (system_irq_handler_t)pwm1_irqhandler, NULL);  /** 注册中断服务函数 */
+  GIC_EnableIRQ(PWM1_IRQn);  /** 使能GIC中对应的中断 */
+  PWM1->PWMSR = 0;      /** PWM中断状态寄存器清零 */
   
-  pwm1_enable();        /* 使能PWM1 */
+  pwm1_enable();        /** 使能PWM1 */
 
   
 }
 
-/**
+/***
   * @brief   使能PWM
   * @param   None.
-  * @return  None.
+  * @retval  None.
   */
 void pwm1_enable(void)
 {
   PWM1->PWMCR |= 1 << 0;   
 }
 
-/*
+/**
  * @brief    : 设置Sample寄存器，Sample数据会写入到FIFO中，
  *             所谓的Sample寄存器，就相当于比较寄存器，假如PWMCR中的POUTC
  *              设置为00的时候。当PWM计数器中的计数值小于Sample的时候
  *            就会输出高电平，当PWM计数器值大于Sample的时候输出底电平,
  *            因此可以通过设置Sample寄存器来设置占空比
  * @param -  value  : 寄存器值，范围0~0XFFFF
- * @return       : None.
+ * @retval       : None.
  */
 void pwm1_setsample_value(unsigned int value)
 {
   PWM1->PWMSAR = (value & 0XFFFF);  
 }
 
-/**
+/***
   * @brief     设置PWM周期，就是设置寄存器PWMPR，PWM周期公式如下
   *            PWM_FRE = PWM_CLK / (PERIOD + 2)， 比如当前PWM_CLK=1MHz
   *            要产生1KHz的PWM，那么PERIOD = 1000000/1K - 2 =   998
   * @param     value  周期值，范围0~0XFFFF
-  * @return      None.
+  * @retval      None.
   */
 void pwm1_setperiod_value(unsigned int value)
 {
@@ -131,10 +131,10 @@ void pwm1_setperiod_value(unsigned int value)
   PWM1->PWMPR = (regvalue & 0XFFFF);
 }
 
-/**
+/***
   * @brief    设置PWM占空比
   * @param -  value  占空比0~100，对应0%~100%
-  * @return     None.
+  * @retval     None.
   */
 void pwm1_setduty(unsigned char duty)
 {
