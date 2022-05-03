@@ -3,7 +3,6 @@
 #include "imx6ul.h"
 
 
-/** 定义按键值 */
 enum keyvalue{
   KEY_NONE   = 0,
   KEY0_VALUE,
@@ -11,7 +10,6 @@ enum keyvalue{
   KEY2_VALUE,
 };
 
-/** 函数声明 */
 void key_init(void);
 int key_getvalue(void);
 

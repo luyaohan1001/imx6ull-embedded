@@ -1,35 +1,36 @@
 #include "bsp_int.h"
 
 
-/** 中断嵌套计数器 */
+/* IRQ nesting counter */
 static unsigned int irqNesting;
 
-/** 中断服务函数表 */
+/* IRQ table. */
 static sys_irq_handle_t irqTable[NUMBER_OF_INT_VECTORS];
 
 /**
- * @brief  : 中断初始化函数
- * @param    : None.
- * @retval     : None.
- */
+  * @brief   Initialize interrupt.
+  * @param   None.
+  * @retval  None.
+  */
 void int_init(void)
 {
-  GIC_Init();             /** 初始化GIC               */
-  system_irqtable_init();        /** 初始化中断表               */
-  __set_VBAR((uint32_t)0x87800000);   /** 中断向量表偏移，偏移到起始地址           */
+  GIC_Init();            
+  system_irqtable_init();      
+	/* offset interrupt table to starting address. */
+  __set_VBAR((uint32_t)0x87800000);   
 }
 
 /**
- * @brief  : 初始化中断服务函数表 
- * @param    : None.
- * @retval     : None.
- */
+  * @brief   Initialize IRQ table.
+  * @param   None.
+  * @retval  None.
+  */
 void system_irqtable_init(void)
 {
   unsigned int i = 0;
   irqNesting = 0;
   
-  /** 先将所有的中断服务函数设置为默认值 */
+	/* set all the IRQ service back to default.*/
   for(i = 0; i < NUMBER_OF_INT_VECTORS; i++)
   {
     system_register_irqhandler((IRQn_Type)i,default_irqhandler, NULL);
@@ -37,12 +38,12 @@ void system_irqtable_init(void)
 }
 
 /**
- * @brief      : 给指定的中断号注册中断服务函数 
- * @param - irq      : 要注册的中断号
- * @param - handler    : 要注册的中断处理函数
- * @param - usrParam  : 中断服务处理函数参数
- * @retval         : None.
- */
+  * @brief   Register IRQ service routine to interrupt number.  
+  * @param   irq The interrupt to register.
+  * @param   handler The interrupt handler to register.
+  * @param   userParam. Interrupt Service Routine paramsters.
+  * @retval  None.
+  */
 void system_register_irqhandler(IRQn_Type irq, system_irq_handler_t handler, void *userParam) 
 {
   irqTable[irq].irqHandler = handler;
@@ -50,38 +51,38 @@ void system_register_irqhandler(IRQn_Type irq, system_irq_handler_t handler, voi
 }
 
 /**
- * @brief      : C语言中断服务函数，irq汇编中断服务函数会
-               调用此函数，此函数通过在中断服务列表中查
-               找指定中断号所对应的中断处理函数并执行。
- * @param - giccIar    : 中断号
- * @retval         : None.
- */
+  * @brief   The interrupt service routine is called when given a IRQ.
+  * @param   giccIar IRQ request number. 
+  * @retval  None.
+  */
 void system_irqhandler(unsigned int giccIar) 
 {
 
    uint32_t intNum = giccIar & 0x3FFUL;
    
-   /** 检查中断号是否符合要求 */
+	 /* Check if IRQ number is valid. */
    if ((intNum == 1023) || (intNum >= NUMBER_OF_INT_VECTORS))
    {
      return;
    }
- 
-   irqNesting++;  /** 中断嵌套计数器加一 */
 
-   /** 根据传递进来的中断号，在irqTable中调用确定的中断服务函数*/
+	 /* increment IRQ nesting counter. */
+   irqNesting++; 
+
+	 /* Call the ISR from the IRQ number. */
    irqTable[intNum].irqHandler(intNum, irqTable[intNum].userParam);
  
-   irqNesting--;  /** 中断执行完成，中断嵌套寄存器减一 */
+	 /* ISR done, decrement nesting counter. */
+   irqNesting--; 
 
 }
 
 /**
- * @brief      : 默认中断服务函数
- * @param - giccIar    : 中断号
- * @param - usrParam  : 中断服务处理函数参数
- * @retval         : None.
- */
+  * @brief   Deafult IRQ handler.
+  * @param   giccIar The IRQ number.
+  * @param   userParam IRQ service routine parameters.
+  * @retval  None.
+  */
 void default_irqhandler(unsigned int giccIar, void *userParam) 
 {
   while(1) 

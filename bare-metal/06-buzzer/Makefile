@@ -1,52 +1,40 @@
-CROSS_COMPILE 	?= arm-linux-gnueabihf-
-TARGET		  	?= beep
+CROSS_COMPILE ?= arm-linux-gnueabihf-
+TARGET        ?= buzzer
 
 CC 				:= $(CROSS_COMPILE)gcc
 LD				:= $(CROSS_COMPILE)ld
 OBJCOPY 		:= $(CROSS_COMPILE)objcopy
 OBJDUMP 		:= $(CROSS_COMPILE)objdump
 
-INCDIRS 		:= imx6ul \
-				   bsp/clk \
-				   bsp/led \
-				   bsp/delay  \
-				   bsp/beep
+all: $(TARGET).bin
+
+C_INCLUDES := \
+-Isrc/bsp/clk \
+-Isrc/bsp/led \
+-Isrc/bsp/delay \
+-Isrc/bsp/buzzer \
+-Isrc/bsp/nxp-migrated
 				   			   
-SRCDIRS			:= project \
-				   bsp/clk \
-				   bsp/led \
-				   bsp/delay \
-				   bsp/beep
-				   
-				   
-INCLUDE			:= $(patsubst %, -I %, $(INCDIRS))
+bsp_clk.o:
+	$(CC) -c src/bsp/clk/bsp_clk.c $(C_INCLUDES) -o build/bsp_clk.o
 
-SFILES			:= $(foreach dir, $(SRCDIRS), $(wildcard $(dir)/*.S))
-CFILES			:= $(foreach dir, $(SRCDIRS), $(wildcard $(dir)/*.c))
+bsp_led.o:
+	$(CC) -c src/bsp/led/bsp_led.c $(C_INCLUDES) -o build/bsp_led.o
 
-SFILENDIR		:= $(notdir  $(SFILES))
-CFILENDIR		:= $(notdir  $(CFILES))
+bsp_delay.o:
+	$(CC) -c src/bsp/delay/bsp_delay.c $(C_INCLUDES) -o build/bsp_delay.o
 
-SOBJS			:= $(patsubst %, build/%, $(SFILENDIR:.S=.o))
-COBJS			:= $(patsubst %, build/%, $(CFILENDIR:.c=.o))
-OBJS			:= $(SOBJS) $(COBJS)
+bsp_beep.o:
+	$(CC) -c src/bsp/buzzer/bsp_beep.c $(C_INCLUDES) -o build/bsp_beep.o
 
-VPATH			:= $(SRCDIRS)
+$(TARGET).bin:  bsp_clk.o bsp_led.o bsp_delay.o bsp_beep.o
+	$(CC) -Wall -O2 -nostdlib $(C_INCLUDES) -c src/start.S -o build/start.o 	
+	$(CC) -Wall -O2 -nostdlib $(C_INCLUDES) -c src/main.c -o build/main.o 
+	$(LD) -Timx6ul.lds build/start.o build/main.o build/bsp_clk.o build/bsp_led.o build/bsp_delay.o build/bsp_beep.o -o build/$(TARGET).elf
+	$(OBJCOPY) -O binary -S build/$(TARGET).elf build/$(TARGET).bin
+	$(OBJDUMP) -D -m arm build/$(TARGET).elf > build/$(TARGET).disassambled.S
 
 .PHONY: clean
-	
-$(TARGET).bin : $(OBJS)
-	$(LD) -Timx6ul.lds -o $(TARGET).elf $^
-	$(OBJCOPY) -O binary -S $(TARGET).elf $@
-	$(OBJDUMP) -D -m arm $(TARGET).elf > $(TARGET).dis
-
-$(SOBJS) : build/%.o : %.S
-	$(CC) -Wall -nostdlib -c -O2  $(INCLUDE) -o $@ $<
-
-$(COBJS) : build/%.o : %.c
-	$(CC) -Wall -nostdlib -c -O2  $(INCLUDE) -o $@ $<
-	
 clean:
-	rm -rf $(TARGET).elf $(TARGET).dis $(TARGET).bin $(COBJS) $(SOBJS)
+	rm -rf $(TARGET).elf $(TARGET).disassembled.S $(TARGET).bin ./build/*.o
 
-	

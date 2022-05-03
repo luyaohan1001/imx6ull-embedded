@@ -1,64 +1,64 @@
 #include "bsp_gpio.h"
 
-/***
-  * @brief    : GPIO初始化。
-  * @param - base  : 要初始化的GPIO组。
-  * @param - pin    : 要初始化GPIO在组内的编号。
-  * @param - config  : GPIO配置结构体。
-  * @retval       : None.
+/**
+  * @brief   Initialize GPIO.
+  * @param   base The GPIO group to initialize. 
+  * @param   pin Pin number.
+  * @param   config The struct to load.
+  * @retval  None.
   */
 void gpio_init(GPIO_Type *base, int pin, gpio_pin_config_t *config)
 {
   base->IMR &= ~(1U << pin);
   
-  if(config->direction == kGPIO_DigitalInput) /** GPIO作为输入 */
+  if(config->direction == kGPIO_DigitalInput) 
   {
     base->GDIR &= ~( 1 << pin);
   }
-  else                    /** 输出 */
+  else                   
   {
     base->GDIR |= 1 << pin;
-    gpio_pinwrite(base,pin, config->outputLogic);  /** 设置默认输出电平 */
+    gpio_pinwrite(base,pin, config->outputLogic);  
   }
-  gpio_intconfig(base, pin, config->interruptMode);  /** 中断功能配置 */
+  gpio_intconfig(base, pin, config->interruptMode);  
 }
 
-/***
-  * @brief   : 读取指定GPIO的电平值 。
-  * @param - base   : 要读取的GPIO组。
-  * @param - pin   : 要读取的GPIO脚号。
-  * @retval      : None.
+/**
+  * @brief   Read GPIO level.
+  * @param   GPIO group to read.
+  * @param   pin Specific pin to read.
+  * @retval  None.
   */
  int gpio_pinread(GPIO_Type *base, int pin)
  {
    return (((base->DR) >> pin) & 0x1);
  }
 
-/***
-  * @brief   : 指定GPIO输出高或者低电平 。
-  * @param - base   : 要输出的的GPIO组。
-  * @param - pin   : 要输出的GPIO脚号。
-  * @param - value   : 要输出的电平，1 输出高电平， 0 输出低低电平
+/**
+  * @brief   Write high / low level to GPIO.
+  * @param   base GPIO group to write.
+  * @param   pin GPIO pin to write.
+  * @param   value to write. 1: high level 0: low level.
   * @retval      : None.
   */
 void gpio_pinwrite(GPIO_Type *base, int pin, int value)
 {
    if (value == 0U)
    {
-     base->DR &= ~(1U << pin); /** 输出低电平 */
+     base->DR &= ~(1U << pin); 
    }
    else
    {
-     base->DR |= (1U << pin); /** 输出高电平 */
+     base->DR |= (1U << pin);
    }
 }
 
-/***
-  * @brief        : 设置GPIO的中断配置功能
-  * @param - base       : 要配置的IO所在的GPIO组。
-  * @param - pin        : 要配置的GPIO脚号。
-  * @param - pinInterruptMode: 中断模式，参考枚举类型gpio_interrupt_mode_t
-  * @retval           : None.
+/**
+  * @brief   Configure interrupt on GPIO.
+  * @param   base The GPIO group to configure.
+  * @param   pin The GPIO pin to configure.
+  * @param   pinInterruptMode.
+  * @retval  None.
   */
 void gpio_intconfig(GPIO_Type* base, unsigned int pin, gpio_interrupt_mode_t pin_int_mode)
 {
@@ -69,11 +69,11 @@ void gpio_intconfig(GPIO_Type* base, unsigned int pin, gpio_interrupt_mode_t pin
   
   base->EDGE_SEL &= ~(1U << pin);
 
-  if(pin < 16)   /** 低16位 */
+  if(pin < 16)   
   {
     icr = &(base->ICR1);
   }
-  else      /** 高16位 */
+  else      
   {
     icr = &(base->ICR2);
     icrShift -= 16;
@@ -101,33 +101,33 @@ void gpio_intconfig(GPIO_Type* base, unsigned int pin, gpio_interrupt_mode_t pin
 }
 
 
-/***
-  * @brief        : 使能GPIO的中断功能
-  * @param - base       : 要使能的IO所在的GPIO组。
-  * @param - pin        : 要使能的GPIO在组内的编号。
-  * @retval           : None.
+/**
+  * @brief   Enable GPIO interrupt.
+  * @param   base The GPIO group to enable.
+  * @param   pin The GPIO pin to enable.
+  * @retval  None.
   */
 void gpio_enableint(GPIO_Type* base, unsigned int pin)
 { 
     base->IMR |= (1 << pin);
 }
 
-/***
-  * @brief        : 禁止GPIO的中断功能
-  * @param - base       : 要禁止的IO所在的GPIO组。
-  * @param - pin        : 要禁止的GPIO在组内的编号。
-  * @retval           : None.
+/**
+  * @brief   Disable interrupt.
+  * @param   base The GPIO group to disable.
+  * @param   pin Pin to disable.
+  * @retval  None.
   */
 void gpio_disableint(GPIO_Type* base, unsigned int pin)
 { 
     base->IMR &= ~(1 << pin);
 }
 
-/***
-  * @brief        : 清除中断标志位(写1清除)
-  * @param - base       : 要清除的IO所在的GPIO组。
-  * @param - pin        : 要清除的GPIO掩码。
-  * @retval           : None.
+/**
+  * @brief   Interrupt flag to clear.
+  * @param   base GPIO group to clear interrupt.
+  * @param   pin Pin to clear.
+  * @retval  None.
   */
 void gpio_clearintflags(GPIO_Type* base, unsigned int pin)
 {
