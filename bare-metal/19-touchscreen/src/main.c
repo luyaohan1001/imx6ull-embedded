@@ -22,6 +22,7 @@ Copyright © zuozhongkai Co., Ltd. 1998-2019. All rights reserved.
 #include "bsp_rtc.h"
 #include "bsp_ft5xx6.h"
 #include "bsp_gt9147.h"
+// #include "bsp_touchscreen.h"
 #include "stdio.h"
 
 /*

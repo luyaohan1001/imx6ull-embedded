@@ -1,85 +1,146 @@
-CROSS_COMPILE 	?= arm-linux-gnueabihf-
-TARGET		  	?= touchscreen
+CROSS_COMPILE ?= arm-linux-gnueabihf-
+TARGET        ?= touchscreen
 
 CC 				:= $(CROSS_COMPILE)gcc
 LD				:= $(CROSS_COMPILE)ld
 OBJCOPY 		:= $(CROSS_COMPILE)objcopy
 OBJDUMP 		:= $(CROSS_COMPILE)objdump
 
-LIBPATH			:= -lgcc -L /usr/local/arm/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabihf/lib/gcc/arm-linux-gnueabihf/4.9.4
+all: $(TARGET).bin
+
+C_INCLUDES := \
+-Isrc/bsp/clk \
+-Isrc/bsp/led \
+-Isrc/bsp/delay \
+-Isrc/bsp/buzzer \
+-Isrc/bsp/key \
+-Isrc/bsp/gpio \
+-Isrc/bsp/interrupt \
+-Isrc/bsp/exti \
+-Isrc/bsp/epittimer \
+-Isrc/bsp/keyfilter \
+-Isrc/bsp/uart \
+-Isrc/bsp/stdio/include \
+-Isrc/bsp/lcd \
+-Isrc/bsp/rtc \
+-Isrc/bsp/i2c \
+-Isrc/bsp/ap3216c \
+-Isrc/bsp/spi \
+-Isrc/bsp/icm20608 \
+-Isrc/bsp/bmp280 \
+-Isrc/bsp/mpu9250 \
+-Isrc/bsp/touchscreen \
+-Isrc/bsp/nxp-migrated
 
 
-INCDIRS 		:= imx6ul \
-				   stdio/include \
-				   bsp/clk \
-				   bsp/led \
-				   bsp/delay  \
-				   bsp/beep \
-				   bsp/gpio \
-				   bsp/key \
-				   bsp/exit \
-				   bsp/int \
-				   bsp/epittimer \
-				   bsp/keyfilter \
-				   bsp/uart \
-				   bsp/lcd \
-				   bsp/rtc \
-				   bsp/i2c \
-				   bsp/ap3216c \
-				   bsp/spi \
-				   bsp/icm20608 \
-				   bsp/touchscreen
-				   			   
-SRCDIRS			:= project \
-				   stdio/lib \
-				   bsp/clk \
-				   bsp/led \
-				   bsp/delay \
-				   bsp/beep \
-				   bsp/gpio \
-				   bsp/key \
-				   bsp/exit \
-				   bsp/int \
-				   bsp/epittimer \
-				   bsp/keyfilter \
-				   bsp/uart \
-				   bsp/lcd \
-				   bsp/rtc \
-				   bsp/i2c \
-				   bsp/ap3216c \
-				   bsp/spi \
-				   bsp/icm20608 \
-				   bsp/touchscreen
-				   
-				   
-INCLUDE			:= $(patsubst %, -I %, $(INCDIRS))
+bsp_clk.o:
+	$(CC) -c -nostdlib -fno-builtin  src/bsp/clk/bsp_clk.c $(C_INCLUDES) -o build/bsp_clk.o
 
-SFILES			:= $(foreach dir, $(SRCDIRS), $(wildcard $(dir)/*.S))
-CFILES			:= $(foreach dir, $(SRCDIRS), $(wildcard $(dir)/*.c))
+bsp_led.o:
+	$(CC) -c -nostdlib -fno-builtin  src/bsp/led/bsp_led.c $(C_INCLUDES) -o build/bsp_led.o
 
-SFILENDIR		:= $(notdir  $(SFILES))
-CFILENDIR		:= $(notdir  $(CFILES))
+bsp_delay.o:
+	$(CC) -c -nostdlib -fno-builtin  src/bsp/delay/bsp_delay.c $(C_INCLUDES) -o build/bsp_delay.o
 
-SOBJS			:= $(patsubst %, build/%, $(SFILENDIR:.S=.o))
-COBJS			:= $(patsubst %, build/%, $(CFILENDIR:.c=.o))
-OBJS			:= $(SOBJS) $(COBJS)
+bsp_beep.o:
+	$(CC) -c -nostdlib -fno-builtin  src/bsp/buzzer/bsp_beep.c $(C_INCLUDES) -o build/bsp_beep.o
 
-VPATH			:= $(SRCDIRS)
+bsp_gpio.o:
+	$(CC) -c -nostdlib -fno-builtin  src/bsp/gpio/bsp_gpio.c $(C_INCLUDES) -o build/bsp_gpio.o
+
+bsp_key.o: 
+	$(CC) -c -nostdlib -fno-builtin  src/bsp/key/bsp_key.c $(C_INCLUDES) -o build/bsp_key.o
+
+bsp_int.o: 
+	$(CC) -c -nostdlib -fno-builtin  src/bsp/interrupt/bsp_int.c $(C_INCLUDES) -o build/bsp_int.o
+
+bsp_exti.o: 
+	$(CC) -c -nostdlib -fno-builtin  src/bsp/exti/bsp_exit.c $(C_INCLUDES) -o build/bsp_exti.o
+
+bsp_epittimer.o: 
+	$(CC) -c -nostdlib -fno-builtin  src/bsp/epittimer/bsp_epittimer.c $(C_INCLUDES) -o build/bsp_epittimer.o
+
+bsp_keydebounce.o: 
+	$(CC) -c -nostdlib -fno-builtin  src/bsp/keyfilter/bsp_keyfilter.c $(C_INCLUDES) -o build/bsp_keydebounce.o
+
+bsp_uart.o: 
+	$(CC) -c -nostdlib -fno-builtin  src/bsp/uart/bsp_uart.c $(C_INCLUDES) -o build/bsp_uart.o
+
+bsp_lcd.o: 
+	$(CC) -c -nostdlib -fno-builtin  src/bsp/lcd/bsp_lcd.c $(C_INCLUDES) -o build/bsp_lcd.o
+
+bsp_lcdapi.o: 
+	$(CC) -c -nostdlib -fno-builtin  src/bsp/lcd/bsp_lcdapi.c $(C_INCLUDES) -o build/bsp_lcdapi.o
+
+bsp_rtc.o: 
+	$(CC) -c -nostdlib -fno-builtin  src/bsp/rtc/bsp_rtc.c $(C_INCLUDES) -o build/bsp_rtc.o
+
+bsp_i2c.o: 
+	$(CC) -c -nostdlib -fno-builtin  src/bsp/i2c/bsp_i2c.c $(C_INCLUDES) -o build/bsp_i2c.o
+
+bsp_ap3216c.o: 
+	$(CC) -c -nostdlib -fno-builtin  src/bsp/ap3216c/bsp_ap3216c.c $(C_INCLUDES) -o build/bsp_ap3216c.o
+
+bsp_spi.o: 
+	$(CC) -c -nostdlib -fno-builtin  src/bsp/spi/bsp_spi.c $(C_INCLUDES) -o build/bsp_spi.o
+
+bsp_icm20608.o: 
+	$(CC) -c -nostdlib -fno-builtin  src/bsp/icm20608/bsp_icm20608.c $(C_INCLUDES) -o build/bsp_icm20608.o
+
+# bsp_bmp280.o: 
+# $(CC) -c -nostdlib -fno-builtin  src/bsp/bmp280/bsp_bmp280.c $(C_INCLUDES) -o build/bsp_bmp280.o
+
+bsp_mpu9250.o: 
+	$(CC) -c -nostdlib -fno-builtin  src/bsp/mpu9250/bsp_mpu9250.c $(C_INCLUDES) -o build/bsp_mpu9250.o
+
+bsp_touchscreen.o: 
+	$(CC) -c -nostdlib -fno-builtin  src/bsp/touchscreen/bsp_touchscreen.c $(C_INCLUDES) -o build/bsp_touchscreen.o
+
+bsp_gt9147.o: 
+	$(CC) -c -nostdlib -fno-builtin  src/bsp/touchscreen/bsp_gt9147.c $(C_INCLUDES) -o build/bsp_gt9147.o
+
+bsp_ft5xx6.o: 
+	$(CC) -c -nostdlib -fno-builtin  src/bsp/touchscreen/bsp_ft5xx6.c $(C_INCLUDES) -o build/bsp_ft5xx6.o
+
+ctype.o:
+	$(CC) -c -nostdlib -fno-builtin  src/bsp/stdio/lib/ctype.c $(C_INCLUDES) -o build/ctype.o
+
+div64.o:
+	$(CC) -c -nostdlib -fno-builtin  src/bsp/stdio/lib/div64.c $(C_INCLUDES) -o build/div64.o
+
+lib1funcs.o:
+	$(CC) -c -nostdlib -fno-builtin  src/bsp/stdio/lib/lib1funcs.S $(C_INCLUDES) -o build/lib1funcs.o
+
+muldi3.o:
+	$(CC) -c -nostdlib -fno-builtin -Wall -Wa,-mimplicit-it=thumb src/bsp/stdio/lib/muldi3.c $(C_INCLUDES) -o build/muldi3.o
+
+printf.o:
+	$(CC) -c -nostdlib -fno-builtin  src/bsp/stdio/lib/printf.c $(C_INCLUDES) -o build/printf.o
+
+string.o:
+	$(CC) -c -nostdlib -fno-builtin  src/bsp/stdio/lib/string.c $(C_INCLUDES) -o build/string.o
+
+vsprintf.o:
+	$(CC) -c -nostdlib -fno-builtin  src/bsp/stdio/lib/vsprintf.c $(C_INCLUDES) -o build/vsprintf.o
+
+
+
+
+
+
+$(TARGET).bin:  bsp_clk.o bsp_led.o bsp_delay.o bsp_beep.o bsp_key.o bsp_gpio.o bsp_int.o bsp_exti.o bsp_epittimer.o bsp_keydebounce.o bsp_uart.o ctype.o  div64.o  lib1funcs.o  muldi3.o  printf.o  string.o  vsprintf.o bsp_lcd.o bsp_lcdapi.o bsp_rtc.o bsp_i2c.o bsp_ap3216c.o bsp_spi.o bsp_icm20608.o bsp_gt9147.o bsp_ft5xx6.o
+	$(CC) -Wall -O2 -nostdlib -fno-builtin  $(C_INCLUDES) -c src/start.S -o build/start.o 	
+	$(CC) -Wall -O2 -nostdlib -fno-builtin  $(C_INCLUDES) -c src/main.c -o build/main.o 
+	$(LD) -Timx6ul.lds build/start.o build/main.o build/bsp_clk.o build/bsp_led.o build/bsp_delay.o build/bsp_beep.o build/bsp_key.o build/bsp_gpio.o build/bsp_int.o build/bsp_exti.o build/bsp_epittimer.o build/bsp_keydebounce.o build/bsp_uart.o build/ctype.o build/div64.o build/lib1funcs.o build/muldi3.o build/printf.o build/string.o build/vsprintf.o build/bsp_lcd.o build/bsp_lcdapi.o build/bsp_rtc.o build/bsp_i2c.o build/bsp_ap3216c.o build/bsp_spi.o build/bsp_icm20608.o build/bsp_gt9147.o build/bsp_ft5xx6.o -o build/$(TARGET).elf -lgcc -L /usr/local/arm/gcc-linaro-4.9.4-2017.01-x86_64_arm-linux-gnueabihf/lib/gcc/arm-linux-gnueabihf/4.9.4
+	$(OBJCOPY) -O binary -S build/$(TARGET).elf build/$(TARGET).bin
+	$(OBJDUMP) -D -m arm build/$(TARGET).elf > build/$(TARGET).disassambled.S
 
 .PHONY: clean
-	
-$(TARGET).bin : $(OBJS)
-	$(LD) -Timx6ul.lds -o $(TARGET).elf $^ $(LIBPATH) 
-	$(OBJCOPY) -O binary -S $(TARGET).elf $@
-	$(OBJDUMP) -D -m arm $(TARGET).elf > $(TARGET).dis
-
-$(SOBJS) : build/%.o : %.S
-	$(CC) -Wall -nostdlib -fno-builtin -c -O2  $(INCLUDE) -o $@ $<
-
-$(COBJS) : build/%.o : %.c
-	$(CC) -Wall -march=armv7-a -mfpu=neon-vfpv4 -mfloat-abi=hard -Wa,-mimplicit-it=thumb -nostdlib -fno-builtin -c -O2  $(INCLUDE) -o $@ $<
-	
 clean:
-	rm -rf $(TARGET).elf $(TARGET).dis $(TARGET).bin $(COBJS) $(SOBJS)
+	rm -rf $(TARGET).elf $(TARGET).disassembled.S $(TARGET).bin ./build/*.o
 
-	
+
+
+
+
+
